@@ -43,7 +43,7 @@ string SHA_1(string ms_Binary)
     int ms_Size = ms_Binary.length();
 
     cout << "length = " << ms_Binary.length() << ", Binarytext = " << ms_Binary << "\n\n";
-    //	²¹Î» 100...0
+    //	è¡¥ä½ 100...0
     int modRes = ms_Binary.length() % 512;
     int modSize;
     if (modRes < 448)
@@ -59,28 +59,28 @@ string SHA_1(string ms_Binary)
         ms_Binary += string(modSize - 1, '0');
     }
     cout << "length = " << ms_Binary.length() << ", Binarytext = " << ms_Binary << "\n\n";
-    //	Ä©Î²²¹³¤¶ÈĞÅÏ¢Î»
+    //	æœ«å°¾è¡¥é•¿åº¦ä¿¡æ¯ä½
     ms_Binary += bitset<64>(ms_Size).to_string();
     cout << "length = " << ms_Binary.length() << ", Binarytext = " << ms_Binary << "\n\n";
-    //	ÒÔ512bitÎªÒ»×é
+    //	ä»¥512bitä¸ºä¸€ç»„
     vector<string> vec_message;
     for (int i = 0; i < ms_Binary.length(); i += 512)
         vec_message.push_back(ms_Binary.substr(i, 512));
-    //	·Ö±ğ´¦ÀíÃ¿Ò»¸öÃ÷ÎÄ¿é
+    //	åˆ†åˆ«å¤„ç†æ¯ä¸€ä¸ªæ˜æ–‡å—
     uL Hi[] = {0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0}; //ABCDE
     for (int i = 0; i < vec_message.size(); ++i)
     {
         string M = vec_message[i];
         vector<uL> Wi(80);
-        //	ÏÈ¼ÆËãWiµÄÖµ
-        for (int k = 0; k < M.length(); k += 64)
-            Wi[k / 64] = bitset<64>(M.substr(k, 64)).to_ullong();
+        //	å…ˆè®¡ç®—Wiçš„å€¼
+        for (int k = 0; k < M.length(); k += 32)
+            Wi[k / 32] = bitset<64>(M.substr(k, 32)).to_ullong();
         for (int k = 16; k < 80; ++k)
         {
             uL t = Wi[k - 3] ^ Wi[k - 8] ^ Wi[k - 14] ^ Wi[k - 16];
             Wi[k] = Cyc_Left_Shift(t, 1);
         }
-        //	80´ÎÑ­»·
+        //	80æ¬¡å¾ªç¯
         uL A = Hi[0], B = Hi[1], C = Hi[2], D = Hi[3], E = Hi[4];
         for (int t = 0; t < 80; ++t)
         {
@@ -95,7 +95,7 @@ string SHA_1(string ms_Binary)
     for (int i = 0; i < 5; ++i)
         hash_binary += bitset<32>(Hi[i]).to_string();
     cout << "hash : " << hash_binary << endl;
-    //  Êä³ö160bitµÄhashÖµ
+    //  è¾“å‡º160bitçš„hashå€¼
     return hash_binary;
 }
 
@@ -104,7 +104,7 @@ int main(int argc, char** argv)
 {
 	string message;
 	getline(cin, message);
-    //  ´¦ÀíÃÜÔ¿key
+    //  å¤„ç†å¯†é’¥key
     string key = "This is SnowDance97's hash key!";
     string binary_key;
     if( key.length() <= 20 ){
@@ -114,14 +114,14 @@ int main(int argc, char** argv)
         binary_key = SHA_1(str_To_strBinary(key));
     }
     bitset<160> bs_key = bitset<160>(binary_key);
-    //  ´¦Àíinner pad
+    //  å¤„ç†inner pad
     string ipad, opad;
     while (ipad.length() != binary_key.length())
         ipad += ipad_base;
     bitset<160> bs_ipad = bitset<160>(ipad);
     bs_ipad ^= bs_key;
     string hash1 = SHA_1(bs_ipad.to_string() + str_To_strBinary(message));
-    //  ´¦Àíouter pad
+    //  å¤„ç†outer pad
     while (opad.length() != binary_key.length())
         opad += opad_base;
     bitset<160> bs_opad = bitset<160>(opad);
